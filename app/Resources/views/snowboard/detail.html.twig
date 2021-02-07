@@ -1,0 +1,24 @@
+{# @var news \Pimcore\Model\DataObject\News #}
+
+{% extends 'layouts/layout.html.twig' %}
+
+
+{% block content %}
+
+    <div id="main-content" class="main-content mb-5">
+
+        <div class="page-header">
+            <h1>{{ snowboard.title }}</h1>
+        </div>
+
+        <div class="display-6">
+            {{ snowboard.description }}
+        </div>
+
+            <div class="row">
+                {{ snowboard.image.thumbnail('image').getHTML({class: 'img-thumbnail1 img-fluid'})|raw }}
+            </div>
+
+    </div>
+
+{% endblock %}

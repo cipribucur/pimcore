@@ -1,0 +1,49 @@
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        # automatically injects dependencies in your services
+        autowire: true
+        # automatically registers your services as commands, event subscribers, etc.
+        autoconfigure: true
+        # this means you cannot fetch services directly from the container via $container->get()
+        # if you need to do this, you can override this setting on individual services
+        public: false
+
+    # ---------------------------------------------------------
+    # Register all controllers of AppBundle as services
+    # ---------------------------------------------------------
+    AppBundle\Controller\:
+        resource: '../../src/AppBundle/Controller'
+        public: true
+        tags: ['controller.service_arguments']
+
+    # ---------------------------------------------------------
+    # Register all commands of AppBundle as commands
+    # ---------------------------------------------------------
+    AppBundle\Command\:
+        resource: '../../src/AppBundle/Command'
+        tags: ['console.command']
+
+    # ---------------------------------------------------------
+    # Twig Extensions
+    # ---------------------------------------------------------
+    AppBundle\Twig\Extension\SnowboardExtension:
+        tags: ['twig.extension']
+
+    # ---------------------------------------------------------
+    # Link Generators for DataObjects
+    # ---------------------------------------------------------
+    AppBundle\Website\LinkGenerator\SnowboardLinkGenerator:
+        public: true
+
+    # ---------------------------------------------------------
+    # Overwrite Pimcore Default Services
+    # ---------------------------------------------------------
+
+    # overwrite PimcoreUrl helper to add existing parameters to generated urls
+    Pimcore\Templating\Helper\PimcoreUrl:
+        class: AppBundle\Website\Tool\PimcoreUrl
+        arguments:
+            $generator: '@router'
+        tags:
+            - { name: templating.helper, alias: pimcoreUrl }
