@@ -15,9 +15,23 @@
             {{ snowboard.description }}
         </div>
 
-            <div class="row">
-                {{ snowboard.image.thumbnail('image').getHTML({class: 'img-thumbnail1 img-fluid'})|raw }}
-            </div>
+        <div class="row">
+            {{ snowboard.image.thumbnail('image').getHTML({class: 'img-thumbnail1 img-fluid'})|raw }}
+        </div>
+        <span>
+            Geolocation: {{ snowboard.geolocation }}
+        </span>
+        {% if snowboard.tags %}
+            <br>
+            <span>
+                <span>Tags:</span>
+                <ul>
+                    {% for tag in snowboard.tags %}
+                        <li>{{ tag }} </li>
+                    {% endfor %}
+                </ul>
+            </span>
+        {% endif %}
 
     </div>
 

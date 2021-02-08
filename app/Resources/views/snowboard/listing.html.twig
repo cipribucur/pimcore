@@ -13,19 +13,17 @@
             <h1>{{ pimcore_input('headline', {'placeholder':'Headline'}) }}</h1>
         </div>
 
-        {{
-            pimcore_areablock('content', {
-                'allowed': [
-                    'headlines',
-                    'hero-teaser',
-                    'horizontal-line',
-                    'wysiwyg'
-                ]
-            })
-        }}
+        {{ pimcore_areablock('content', {
+            'allowed': [
+                'headlines',
+                'hero-teaser',
+                'horizontal-line',
+                'wysiwyg'
+            ]
+        }) }}
         <div class="row">
             <ul class="list-unstyled">
-                {%  for snowboard in snowboard %}
+                {% for snowboard in snowboard %}
                     {# @var snowboardLocations \Pimcore\Model\DataObject\SnowboardLocations #}
                     {% set detailLink = app_snowboard_detaillink(snowboard) %}
 
@@ -36,11 +34,25 @@
                             </a>
                         {% endif %}
                         <div class="media-body">
-                            <h5 class="mt-0">
+                            <h6 class="mt-0">
                                 <a href="{{ detailLink }}" class="text-decoration-none text-dark">
                                     {{ snowboard.title }}
                                 </a>
-                            </h5>
+                            </h6>
+                            <span>
+                                Geolocation: {{ snowboard.geolocation }}
+                            </span>
+                            {% if snowboard.tags %}
+                                <br>
+                                <span>
+                                    <span>Tags:</span>
+                                    <ul>
+                                        {% for tag in snowboard.tags %}
+                                            <li>{{ tag }} </li>
+                                        {% endfor %}
+                                    </ul>
+                                </span>
+                            {% endif %}
                         </div>
                     </li>
                 {% endfor %}
@@ -55,4 +67,4 @@
 
     </div>
 
-{%  endblock %}
+{% endblock %}
