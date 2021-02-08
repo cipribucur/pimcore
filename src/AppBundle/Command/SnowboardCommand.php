@@ -60,6 +60,7 @@ class SnowboardCommand extends AbstractCommand
          */
         if (empty($_ENV['apiKey'])) {
             $output->writeln("ApiKey is empty. Please add as an env var the api Key ");
+            return;
         }
 
         $this->setApiClient();
