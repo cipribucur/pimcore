@@ -1,0 +1,7 @@
+challange_car:
+    resource: "@ChallangeCarBundle/Controller/"
+    type:     annotation
+    prefix: /admin/car
+    options:
+        expose: true
+
