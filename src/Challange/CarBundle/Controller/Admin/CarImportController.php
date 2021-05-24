@@ -4,14 +4,41 @@
 namespace Challange\CarBundle\Controller\Admin;
 
 
+use Exception;
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use Pimcore\Model\Asset;
+use Pimcore\Model\DataObject\Cars;
+use Pimcore\Model\Element\Service;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Pimcore\Model\DataObject;
 
 class CarImportController extends AdminController
 {
+    const MIMETYPE = 'text/csv';
+    /**
+     * @var Asset|null
+     */
+    private ?Asset $asset;
+
+    private array $importAttributes = [
+        'articleNumber',
+        'manufacturer',
+        'model',
+        'cylinders',
+        'horsepower',
+        'productionYear'
+    ];
+
+    private array $importLocalizedAttributes = [
+      'description'
+    ];
+
+    private array $importLocales = ['en', 'de'];
+
+    private array $failedArticles = [];
+
     /**
      * @Route("/carimport", name="pimcore_admin_asset_carimport", methods={"GET"})
      *
@@ -19,50 +46,78 @@ class CarImportController extends AdminController
      *
      * @return JsonResponse
      */
-    public function carImportAction(Request $request)
+    public function carImportAction(Request $request): JsonResponse
     {
-        $jobId = uniqid();
-        $filesPerJob = 5;
-        $jobs = [];
-        $asset = Asset::getById($request->get('id'));
+        $this->asset = Asset::getById($request->get('id'));
 
-        if (!$asset) {
+        if (!$this->asset) {
             throw $this->createNotFoundException('Asset not found');
         }
 
-        if ($asset->isAllowed('view')) {
-            $parentPath = $asset->getRealFullPath();
+        if (!$this->asset->isAllowed('view')) {
             //import the csv into objects
-
-            $this->import($asset);
+            throw $this->createNotFoundException('Asset not allowed to access');
         }
+
+        if (!$this->asset->getMimetype() == static::MIMETYPE) {
+            //import the csv into objects
+            throw $this->createNotFoundException('Asset is not a CSV file.');
+        }
+
+        $this->import();
 
         return $this->adminJson([
             'success' => true,
-            'jobs' => $jobs,
-            'jobId' => $jobId,
+            'failedArticle' => $this->getFailedArticles()
         ]);
     }
 
-    public function import(Asset $asset): bool
+    /**
+     * @return array
+     */
+    public function getFailedArticles(): array
+    {
+        return $this->failedArticles;
+    }
+
+    private function import(): void
     {
         /**
          * we go through each row of the csv and import it
          */
         foreach ($this->getCsv() as $car) {
-            $this->car = $car;
-            $keyErrors = $this->parseRow($this->getObjectApiEndpoint(), $this->getHeaders());
+            // Create a new object
+            $newCar = new DataObject\Cars();
+
+            $newCar->setKey(Service::getValidKey($car['articleNumber'], 'object'));
+            $newCar->setPublished(true);
+            $newCar->setParentId(1);
+
+            try {
+                $this->setAttributes($newCar, $car);
+                $this->setLocalizedAttributes($newCar, $car);
+                $newCar->save(["versionNote" => 'asset_checksum_' . $this->asset->getChecksum()]);
+            } catch (Exception $e) {
+                $this->failedArticles[] = $car['articleNumber'];
+            }
+
         }
+    }
 
-        /**
-         * if we find any errors we log in console their keys
-         */
-        if (!empty($keyErrors)) {
-
-            return;
+    private function setAttributes(Cars $newCar, array $car): void
+    {
+        foreach ($this->importAttributes as $attr) {
+            $newCar->set($attr, $car[$attr]);
         }
+    }
 
-        return true;
+    private function setLocalizedAttributes(Cars $newCar, array $car): void
+    {
+        foreach ($this->importLocales as $localization) {
+            foreach ($this->importLocalizedAttributes as $localAttr) {
+                $newCar->set($localAttr, $car[$localAttr], $localization);
+            }
+        }
     }
 
     /**
@@ -72,7 +127,7 @@ class CarImportController extends AdminController
      */
     private function getCsv(): array
     {
-        $csv = array_map('str_getcsv', file(self::IMPORT_PATH));
+        $csv = array_map('str_getcsv', file($this->asset->getFileSystemPath()));
         array_walk($csv, function (&$a) use ($csv) {
             $a = array_combine($csv[0], $a);
         });
@@ -81,27 +136,4 @@ class CarImportController extends AdminController
         return $csv;
     }
 
-    /**
-     * @param $newObjectUri
-     * @param $headers
-     * @return string
-     */
-    private function parseRow($newObjectUri, $headers): string
-    {
-        //key is mandatory for the request
-        if (empty($this->car['key'])) {
-            return '';
-        }
-        $jsonBody = json_encode($this->getBody());
-        try {
-            $request  = new Request('POST', $newObjectUri, $headers, $jsonBody);
-            $response = $this->api->send($request, ['timeout' => 2, 'verify' => false]);
-            if ($response->getStatusCode() == 200) {
-                return '';
-            }
-            return $this->snowboardLocation['key'] . ', ';
-        } catch (GuzzleException $e) {
-            return $this->snowboardLocation['key'] . ', ';
-        }
-    }
 }
