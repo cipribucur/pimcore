@@ -6,6 +6,7 @@ namespace Challenge\AssetImportBundle\Controller\Admin;
 
 
 use Challenge\AssetImportBundle\ImportManager\CsvImport;
+use Exception;
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject\Cars;
@@ -26,6 +27,7 @@ class CarImportController extends AdminController
      * @param Request $request
      *
      * @return JsonResponse
+     * @throws Exception
      */
     public function carImportAction(Request $request): JsonResponse
     {
@@ -53,7 +55,11 @@ class CarImportController extends AdminController
         ]);
     }
 
-    private function carImport($asset): void
+    /**
+     * @param Asset $asset
+     * @throws Exception
+     */
+    private function carImport(Asset $asset): void
     {
         $csvImport = new CsvImport();
         $csvImport->setAsset($asset);

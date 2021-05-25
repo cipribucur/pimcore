@@ -4,9 +4,9 @@
 namespace Challenge\AssetImportBundle\ImportManager;
 
 
+use Exception;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject;
-use Pimcore\Model\DataObject\Cars;
 use Pimcore\Model\Element\Service;
 
 abstract class AbstractImport
@@ -17,7 +17,14 @@ abstract class AbstractImport
 
     private array $importLocales = [];
 
-    public function import($dataObject, $key, $parent): array
+    /**
+     * @param DataObject $dataObject
+     * @param $key
+     * @param $parent
+     * @return array
+     * @throws Exception
+     */
+    public function import(DataObject $dataObject, $key, $parent): array
     {
         $failedRows = [];
         /**
@@ -88,6 +95,11 @@ abstract class AbstractImport
         return $this->asset;
     }
 
+    /**
+     * @param DataObject $dataObject
+     * @param array $car
+     * @throws Exception
+     */
     protected function setObjectAttributes(DataObject $dataObject, array $car): void
     {
         foreach ($this->importAttributes as $attr) {
@@ -95,6 +107,11 @@ abstract class AbstractImport
         }
     }
 
+    /**
+     * @param DataObject $dataObject
+     * @param array $car
+     * @throws Exception
+     */
     protected function setObjectLocalizedAttributes(DataObject $dataObject, array $car): void
     {
         foreach ($this->importLocales as $localization) {
@@ -104,6 +121,9 @@ abstract class AbstractImport
         }
     }
 
+    /**
+     * @return array
+     */
     protected function getDataToImport(): array
     {
         return [];

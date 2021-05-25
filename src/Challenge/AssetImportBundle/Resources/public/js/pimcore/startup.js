@@ -32,13 +32,7 @@ pimcore.plugin.ChallengeAssetImportBundle = Class.create(pimcore.plugin.admin, {
         pimcore.plugin.broker.registerPlugin(this);
     },
 
-    pimcoreReady: function (params, broker) {
-        //alert("ChallengeAssetImportBundle ready!");
-    },
-
     postOpenAsset: function (object, type) {
-
-        // if (object.data.general.o_className == 'ShopProduct') {
 
         object.toolbar.add({
             text: t('do-import'),
@@ -49,7 +43,6 @@ pimcore.plugin.ChallengeAssetImportBundle = Class.create(pimcore.plugin.admin, {
             }.bind(this)
         });
         pimcore.layout.refresh();
-        // }
     }
 });
 
