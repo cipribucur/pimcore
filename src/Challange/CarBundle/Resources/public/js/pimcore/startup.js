@@ -11,8 +11,13 @@ pimcore.elementservice.importAssetCsv = function (id) {
         success: function(response) {
             var result = Ext.decode(response.responseText);
             if(result.success) {
-                pimcore.helpers.showNotification(t('web2print_cancel_generation'), t('web2print_cancel_generation_error'), "error");
-                //alert("ChallangeCarBundle import done!");
+                pimcore.helpers.showNotification(t('Import done'), "success");
+            }
+            if (result.failedArticles) {
+                pimcore.helpers.showNotification(result.failedArticles, "error");
+            }
+            if(!result.success) {
+                pimcore.helpers.showNotification(t('Import failed :('), "error");
             }
         }.bind(this)
     });
