@@ -1,2 +1,7 @@
+challenge_asset_import:
+    resource: "@ChallengeAssetImportBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 _pimcore:
     resource: "@PimcoreCoreBundle/Resources/config/routing.yml"

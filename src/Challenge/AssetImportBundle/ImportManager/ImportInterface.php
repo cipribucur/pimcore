@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Challange\CarBundle\ImportManager;
+namespace Challenge\AssetImportBundle\ImportManager;
 
 
 use Pimcore\Model\Asset;

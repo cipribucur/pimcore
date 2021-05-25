@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Challange\CarBundle\ImportManager;
+namespace Challenge\AssetImportBundle\ImportManager;
 
 class CsvImport extends AbstractImport implements ImportInterface
 {

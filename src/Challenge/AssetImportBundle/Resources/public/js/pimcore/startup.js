@@ -1,6 +1,6 @@
-pimcore.registerNS("pimcore.plugin.ChallangeCarBundle");
+pimcore.registerNS("pimcore.plugin.ChallengeAssetImportBundle");
 
-pimcore.elementservice.importAssetCsv = function (id) {
+pimcore.elementservice.AssetImportBundleCsv = function (id) {
 
     Ext.Ajax.request({
         url: Routing.generate('pimcore_admin_asset_carimport'),
@@ -23,9 +23,9 @@ pimcore.elementservice.importAssetCsv = function (id) {
     });
 };
 
-pimcore.plugin.ChallangeCarBundle = Class.create(pimcore.plugin.admin, {
+pimcore.plugin.ChallengeAssetImportBundle = Class.create(pimcore.plugin.admin, {
     getClassName: function () {
-        return "pimcore.plugin.ChallangeCarBundle";
+        return "pimcore.plugin.ChallengeAssetImportBundle";
     },
 
     initialize: function () {
@@ -33,24 +33,24 @@ pimcore.plugin.ChallangeCarBundle = Class.create(pimcore.plugin.admin, {
     },
 
     pimcoreReady: function (params, broker) {
-         //alert("ChallangeCarBundle ready!");
+        //alert("ChallengeAssetImportBundle ready!");
     },
 
     postOpenAsset: function (object, type) {
 
         // if (object.data.general.o_className == 'ShopProduct') {
 
-            object.toolbar.add({
-                text: t('do-import'),
-                iconCls: 'pimcore_material_icon_upload',
-                scale: 'small',
-                handler: function () {
-                    pimcore.elementservice.importAssetCsv(object.id)
-                }.bind(this)
-            });
-            pimcore.layout.refresh();
+        object.toolbar.add({
+            text: t('do-import'),
+            iconCls: 'pimcore_material_icon_upload',
+            scale: 'small',
+            handler: function () {
+                pimcore.elementservice.AssetImportBundleCsv(object.id)
+            }.bind(this)
+        });
+        pimcore.layout.refresh();
         // }
     }
 });
 
-var ChallangeCarBundlePlugin = new pimcore.plugin.ChallangeCarBundle();
+var ChallengeAssetImportBundlePlugin = new pimcore.plugin.ChallengeAssetImportBundle();

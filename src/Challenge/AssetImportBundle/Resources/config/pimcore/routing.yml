@@ -1,5 +1,5 @@
-challange_car:
-    resource: "@ChallangeCarBundle/Controller/"
+challenge_asset_import:
+    resource: "@ChallengeAssetImportBundle/Controller/"
     type:     annotation
     prefix: /admin/car
     options:

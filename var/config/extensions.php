@@ -2,6 +2,7 @@
 
 return [
     "bundle" => [
-        "Challange\\CarBundle\\ChallangeCarBundle" => TRUE
+        "Challenge\\ImportAssetBundle\\ImportAssetBundle" => TRUE,
+        "Challenge\\AssetImportBundle\\ChallengeAssetImportBundle" => TRUE
     ]
 ];

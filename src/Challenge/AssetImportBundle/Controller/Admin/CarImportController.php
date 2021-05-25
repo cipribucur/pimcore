@@ -1,11 +1,11 @@
 <?php
 
 
-namespace Challange\CarBundle\Controller\Admin;
+namespace Challenge\AssetImportBundle\Controller\Admin;
 
 
 
-use Challange\CarBundle\ImportManager\CsvImport;
+use Challenge\AssetImportBundle\ImportManager\CsvImport;
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject\Cars;
